@@ -1,3 +1,16 @@
+# Celery
+celerybeat-schedule
+celerybeat.pid
+celerybeat-*
+
+# Assets
+media/
+static/
+
+# Editors
+.idea/
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
