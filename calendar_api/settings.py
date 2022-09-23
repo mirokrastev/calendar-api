@@ -41,6 +41,8 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'drf_yasg',
+
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -103,6 +105,8 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ]
 }
+
+AUTH_USER_MODEL = 'accounts.User'
 
 
 # Password validation
