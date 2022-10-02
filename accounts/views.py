@@ -1,7 +1,6 @@
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, GenericAPIView
+from rest_framework.generics import CreateAPIView, GenericAPIView, get_object_or_404
 from rest_framework.response import Response
-from drf_yasg.utils import swagger_auto_schema
 
 from accounts import models
 from accounts import serializers
@@ -23,6 +22,7 @@ class RegisterView(CreateAPIView):
 
 
 class VerifyUserView(GenericAPIView):
+    queryset = models.VerificationToken.objects.filter(type=models.VerificationToken.Types.ACCOUNT)
     serializer_class = serializers.VerifyUserSerializer
     permission_classes = ()
 
@@ -30,16 +30,18 @@ class VerifyUserView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        token_qs = models.VerificationToken.objects.filter(user__username=request.data['username'],
-                                                           token=request.data['token'],
-                                                           type=models.VerificationToken.Types.ACCOUNT)
+        token = self.get_object()
 
-        if not token_qs.exists():
-            return Response({'status': 'failed', 'message': 'Token not found.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        token = token_qs.first()
         token.user.is_active = True
         token.user.save()
         token.delete()
 
         return Response({'status': 'OK'}, status=status.HTTP_200_OK)
+
+    def get_object(self):
+        queryset = self.filter_queryset(self.get_queryset())
+        lookup_kwargs = {'user__username': self.request.data['username'],
+                         'token': self.request.data['token']}
+
+        token = get_object_or_404(queryset, **lookup_kwargs)
+        return token

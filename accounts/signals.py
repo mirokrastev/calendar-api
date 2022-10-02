@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.loader import render_to_string
-from django.core.mail import EmailMessage, send_mail
+from django.core.mail import send_mail
 
 from accounts import models
 

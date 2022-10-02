@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 
 
+# todo create base model with uuid and created datetime
 class User(AbstractUser):
     email = models.EmailField(_("email address"), unique=True)
 
