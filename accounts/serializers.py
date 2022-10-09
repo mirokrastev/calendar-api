@@ -6,6 +6,7 @@ from accounts import models
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, trim_whitespace=False)
+    is_active = serializers.BooleanField(read_only=True)
 
     def validate_password(self, value):
         if not validate_password(value):
@@ -17,4 +18,13 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.User
-        fields = ('id', 'username', 'password', 'email', 'first_name', 'last_name')
+        fields = ('id', 'username', 'password', 'email', 'first_name', 'last_name', 'is_active')
+
+
+class VerifyUserSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username', write_only=True, max_length=150)
+    token = serializers.CharField(write_only=True, max_length=128)
+
+    class Meta:
+        model = models.VerificationToken
+        fields = ('username', 'token')
