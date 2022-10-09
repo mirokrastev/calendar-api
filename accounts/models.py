@@ -2,16 +2,17 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 
+from base.models import BaseModel
 
-# todo create base model with uuid and created datetime
-class User(AbstractUser):
+
+class User(BaseModel, AbstractUser):
     email = models.EmailField(_("email address"), unique=True)
 
     def __str__(self):
         return self.username
 
 
-class VerificationToken(models.Model):
+class VerificationToken(BaseModel):
     class Types(models.TextChoices):
         ACCOUNT = ('account', 'Account Verification')
         PASSWORD = ('password', 'Password Reset')
@@ -24,10 +25,8 @@ class VerificationToken(models.Model):
     def save(self, *args, **kwargs):
         from accounts.services import token_service
 
-        if self.pk:
-            return super().save(*args, **kwargs)
-
-        self.token = token_service[self.type].generate(self.user)
+        if not self.token:
+            self.token = token_service[self.type].generate(self.user)
         return super().save(*args, **kwargs)
 
     def __str__(self):

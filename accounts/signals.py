@@ -26,8 +26,8 @@ def send_user_verification_email(instance, created, **kwargs):
     }
 
     email_content = render_to_string('email/account_activation.html', context)
-
-    send_mail('Verification Token',
-              email_content,
-              settings.EMAIL_HOST_USER,
-              [instance.user.email])
+    send_mail(subject='Verification Token',
+              message=email_content,
+              html_message=email_content,
+              from_email=settings.EMAIL_HOST_USER,
+              recipient_list=[instance.user.email])

@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, GenericAPIView, get_object_or_404
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts import models
 from accounts import serializers
@@ -31,12 +32,18 @@ class VerifyUserView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         token = self.get_object()
+        user = token.user
 
-        token.user.is_active = True
-        token.user.save()
+        user.is_active = True
+        user.save()
         token.delete()
 
-        return Response({'status': 'OK'}, status=status.HTTP_200_OK)
+        # Generate JWT Token
+        jwt_token = RefreshToken.for_user(user)
+        refresh = str(jwt_token)
+        access = str(jwt_token.access_token)
+
+        return Response({'refresh': refresh, 'access': access}, status=status.HTTP_200_OK)
 
     def get_object(self):
         queryset = self.filter_queryset(self.get_queryset())
