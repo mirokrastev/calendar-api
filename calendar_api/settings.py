@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
 
+    'base',
     'accounts',
+    'events',
 ]
 
 MIDDLEWARE = [
@@ -140,6 +142,10 @@ USE_I18N = True
 USE_TZ = True
 
 
+# Celery
+CELERY_BROKER_URL = config('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND')
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
@@ -153,3 +159,13 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_HOST = 'smtp-mail.outlook.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+# In hours
+TOKEN_EXPIRATION = config('TOKEN_EXPIRATION', cast=int, default=24)
