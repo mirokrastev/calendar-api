@@ -19,3 +19,15 @@ class CategorySerializer(serializers.ModelSerializer):
                 message=_('Category duplication'),
             ),
         ]
+
+
+class EventSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    category_id = serializers.PrimaryKeyRelatedField(write_only=True, source='category',
+                                                     required=False,
+                                                     queryset=models.Category.objects.all())
+    category = CategorySerializer(read_only=True)
+
+    class Meta:
+        model = models.Event
+        fields = ('id', 'category', 'category_id', 'title', 'user')
