@@ -17,8 +17,7 @@ class BaseToken(ABC):
 
     @classmethod
     def verify(cls, user, token):
-        if cls.TOKEN_TYPE is None:
-            raise NotImplementedError('Subclasses should have TOKEN_TYPE attribute')
+        assert cls.TOKEN_TYPE is not None, 'TOKEN_TYPE attribute should be supplied'
         return VerificationToken.objects.filter(user=user, token=token, type=cls.TOKEN_TYPE).exists()
 
 
