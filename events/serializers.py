@@ -3,6 +3,7 @@ from rest_framework import serializers
 from rest_framework import validators
 
 from events import models
+from base.serializers import UserForeignKey
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -23,11 +24,11 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class EventSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    category_id = serializers.PrimaryKeyRelatedField(write_only=True, source='category',
-                                                     required=False,
-                                                     queryset=models.Category.objects.all())
+    category_id = UserForeignKey(write_only=True, source='category',
+                                 required=False,
+                                 queryset=models.Category.objects.all())
     category = CategorySerializer(read_only=True)
 
     class Meta:
         model = models.Event
-        fields = ('id', 'category', 'category_id', 'title', 'user')
+        fields = ('id', 'title', 'start_date', 'end_date', 'category', 'category_id', 'user')
